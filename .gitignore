@@ -1,7 +1,12 @@
+# Local Claude Code config (contains tokens and local settings)
+.claude/
+
 # Build output
 dist/
+dxt/
 serverscom-mcp
 serverscom-mcp-*
+*.dxt
 
 # Go
 *.test

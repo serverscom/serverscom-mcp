@@ -1,0 +1,60 @@
+{
+  "manifest_version": "0.3",
+  "name": "serverscom-mcp",
+  "display_name": "Servers.com",
+  "version": "0.1.0",
+  "description": "Manage Servers.com dedicated server infrastructure",
+  "long_description": "Interact with Servers.com API to query and manage dedicated servers, SSH keys, networks, storage, power, and OS reinstallation.",
+  "author": {
+    "name": "Servers.com",
+    "url": "https://servers.com"
+  },
+  "homepage": "https://github.com/serverscom/serverscom-mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serverscom/serverscom-mcp"
+  },
+  "documentation": "https://github.com/serverscom/serverscom-mcp#readme",
+  "support": "https://github.com/serverscom/serverscom-mcp/issues",
+  "license": "MIT",
+  "keywords": ["serverscom", "dedicated-servers", "infrastructure", "mcp"],
+  "icon": "icon.svg",
+  "server": {
+    "type": "binary",
+    "entry_point": "server/run.sh",
+    "mcp_config": {
+      "command": "${__dirname}/server/run.sh",
+      "args": [],
+      "env": {
+        "SC_TOKEN": "${user_config.api_token}",
+        "SC_ENDPOINT": "${user_config.api_endpoint}"
+      },
+      "platform_overrides": {
+        "win32": {
+          "command": "${__dirname}/server/serverscom-mcp-windows-amd64.exe"
+        }
+      }
+    }
+  },
+  "user_config": {
+    "api_token": {
+      "type": "string",
+      "title": "API Token",
+      "description": "Servers.com API token",
+      "sensitive": true,
+      "required": false
+    },
+    "api_endpoint": {
+      "type": "string",
+      "title": "API Endpoint",
+      "description": "Servers.com API endpoint",
+      "default": "https://api.servers.com/v1",
+      "required": false
+    }
+  },
+  "tools_generated": true,
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "claude_desktop": ">=0.10.0"
+  }
+}
