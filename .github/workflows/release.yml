@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  goreleaser:
+    name: GoReleaser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  npm-publish:
+    name: Publish npm packages
+    runs-on: ubuntu-latest
+    needs: goreleaser
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm (required for trusted publishing)
+        run: npm install -g npm@latest
+
+      - name: Download GoReleaser artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Build npm packages
+        run: |
+          npx -y goreleaser-npm-publisher build \
+            --prefix "@servers.com" \
+            --description "MCP server for Servers.com infrastructure management" \
+            --license MIT \
+            --keywords "mcp,serverscom,dedicated-servers,infrastructure" \
+            --files README.md --files LICENSE \
+            --clear
+
+      - name: Fix bin name in main package
+        run: |
+          node -e "
+            const fs = require('fs');
+            const p = 'dist/npm/mcp/package.json';
+            const pkg = JSON.parse(fs.readFileSync(p));
+            pkg.bin = { 'serverscom-mcp': 'index.js' };
+            fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + '\n');
+            console.log('bin fixed:', JSON.stringify(pkg.bin));
+          "
+
+      - name: Publish npm packages
+        run: |
+          for dir in dist/npm/*/; do
+            echo "Publishing $dir..."
+            npm publish "$dir" --access public --provenance
+          done
