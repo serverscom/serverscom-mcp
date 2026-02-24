@@ -5,62 +5,13 @@ MCP (Model Context Protocol) server for managing [Servers.com](https://servers.c
 ## Quick Start
 
 ```bash
-# run directly with npx (no install required)
 npx @servers.com/mcp --token your-api-token
 
 # or via env var
 SC_TOKEN=your-api-token npx @servers.com/mcp
 ```
 
-## Requirements
-
-- Servers.com API token
-
-## Releasing
-
-Releases are fully automated via [GoReleaser](https://goreleaser.com) and GitHub Actions.
-
-Push a version tag to trigger the pipeline:
-
-```bash
-git tag v1.2.3
-git push origin v1.2.3
-```
-
-The workflow (`.github/workflows/release.yml`) will:
-1. Build binaries for Linux, macOS, Windows (amd64 + arm64)
-2. Create a GitHub Release with archives and checksums
-3. Publish `@servers.com/mcp` and platform packages to npm via [`goreleaser-npm-publisher`](https://github.com/evg4b/goreleaser-npm-publisher)
-
-**Required repository secrets:**
-- `NPM_TOKEN` — npm automation token with publish access
-
-## Building from source
-
-```bash
-go build -o serverscom-mcp .
-```
-
-## Configuration
-
-Flags can be set via CLI flags or environment variables:
-
-| Flag | Env var | Required | Default | Description |
-|---|---|---|---|---|
-| `--token`, `-t` | `SC_TOKEN` | yes | — | Servers.com API token |
-| `--endpoint`, `-e` | `SC_ENDPOINT` | no | `https://api.servers.com/v1` | Custom API endpoint |
-
-```bash
-# via env vars
-SC_TOKEN=your-token ./serverscom-mcp
-
-# via flags
-./serverscom-mcp --token your-token --endpoint https://api.servers.com/v1
-```
-
 ## Usage with Claude Desktop
-
-### via npx (recommended)
 
 ```json
 {
@@ -76,20 +27,12 @@ SC_TOKEN=your-token ./serverscom-mcp
 }
 ```
 
-### via local binary
+## Configuration
 
-```json
-{
-  "mcpServers": {
-    "serverscom": {
-      "command": "/path/to/serverscom-mcp",
-      "env": {
-        "SC_TOKEN": "your-api-token"
-      }
-    }
-  }
-}
-```
+| Flag | Env var | Required | Default | Description |
+|---|---|---|---|---|
+| `--token`, `-t` | `SC_TOKEN` | yes | — | Servers.com API token |
+| `--endpoint`, `-e` | `SC_ENDPOINT` | no | `https://api.servers.com/v1` | Custom API endpoint |
 
 ## Available Tools
 
@@ -203,15 +146,41 @@ Many operations are asynchronous. After calling them, poll the relevant status f
 | OS reinstallation | `get_dedicated_server` | `operational_status` |
 | Power changes | `get_dedicated_server` | `power_status` |
 
-### `operational_status` values
+`operational_status` values: `normal` → `provisioning` → `installation` → `entering_rescue_mode` → `rescue_mode` → `exiting_rescue_mode` → `maintenance`
 
-`normal` → `provisioning` → `installation` → `entering_rescue_mode` → `rescue_mode` → `exiting_rescue_mode` → `maintenance`
+## License
 
-## Project Structure
+[MIT](LICENSE)
+
+---
+
+## Development
+
+### Building from source
+
+```bash
+go build -o serverscom-mcp .
+```
+
+### Releasing
+
+Releases are automated via [GoReleaser](https://goreleaser.com) and GitHub Actions. Push a version tag to trigger the pipeline:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The workflow will:
+1. Build binaries for Linux, macOS, Windows (amd64 + arm64)
+2. Create a GitHub Release with archives and checksums
+3. Publish `@servers.com/mcp` and platform packages to npm using [trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC, no long-lived tokens)
+
+### Project Structure
 
 ```
 serverscom-mcp/
-├── main.go                       # Entry point: MCP server setup, env config
+├── main.go                       # Entry point
 └── internal/tools/
     ├── tools.go                  # Tool registration hub, shared helpers
     ├── hosts.go                  # list_hosts
@@ -223,7 +192,3 @@ serverscom-mcp/
     ├── reinstall.go              # OS reinstallation
     └── networks.go               # Network management
 ```
-
-## License
-
-See [LICENSE](LICENSE).
