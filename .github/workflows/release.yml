@@ -71,15 +71,22 @@ jobs:
             --files README.md --files LICENSE \
             --clear
 
-      - name: Fix bin name in main package
+      - name: Fix npm packages
         run: |
           node -e "
             const fs = require('fs');
-            const p = 'dist/npm/mcp/package.json';
-            const pkg = JSON.parse(fs.readFileSync(p));
-            pkg.bin = { 'serverscom-mcp': 'index.js' };
-            fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + '\n');
-            console.log('bin fixed:', JSON.stringify(pkg.bin));
+            const repo = 'https://github.com/serverscom/serverscom-mcp';
+            const dirs = fs.readdirSync('dist/npm');
+            for (const dir of dirs) {
+              const p = 'dist/npm/' + dir + '/package.json';
+              const pkg = JSON.parse(fs.readFileSync(p));
+              pkg.repository = { type: 'git', url: repo };
+              if (dir === 'mcp') {
+                pkg.bin = { 'serverscom-mcp': 'index.js' };
+              }
+              fs.writeFileSync(p, JSON.stringify(pkg, null, 2) + '\n');
+              console.log('fixed:', pkg.name);
+            }
           "
 
       - name: Publish npm packages
