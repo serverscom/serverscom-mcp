@@ -156,3 +156,19 @@ L2 segments unite dedicated servers within a location group into a single broadc
 **Member modes:** `native` (no OS config needed, 1 per interface per type) · `trunk` (requires VLAN sub-interface on server OS, up to 16 per type)
 
 **Limits per server:** 1 native public + 1 native private + 16 public trunk + 16 private trunk = 34 max
+
+## Kubernetes Clusters
+
+Managed Kubernetes clusters on Servers.com infrastructure. Clusters are provisioned through the Servers.com portal; these tools provide read and label-management access.
+
+| Tool | Description |
+|---|---|
+| `list_kubernetes_clusters` | List all Kubernetes clusters in the account |
+| `get_kubernetes_cluster` | Get cluster details: status, location, labels |
+| `update_kubernetes_cluster` | Update cluster labels (replaces all existing labels) |
+| `list_kubernetes_cluster_nodes` | List all nodes in a cluster: role, type, status, IP addresses |
+| `get_kubernetes_cluster_node` | Get full details of a specific cluster node |
+
+**Node roles:** `master` · `node`
+
+**Node types:** `cloud` · `baremetal`

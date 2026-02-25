@@ -34,6 +34,7 @@ func Register(server *mcp.Server, token, endpoint, version string) {
 	registerNetworkTools(server, h)
 	registerL2SegmentTools(server, h)
 	registerRBSTools(server, h)
+	registerKubernetesClusterTools(server, h)
 }
 
 // jsonResult serialises v as indented JSON and wraps it in a TextContent result.

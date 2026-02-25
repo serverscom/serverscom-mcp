@@ -22,7 +22,8 @@ serverscom-mcp/
     ├── networks.go         # server networks (IPv4/IPv6, gateway/route)
     ├── l2_segments.go      # L2 segment management
     ├── drives.go           # drive slot listing
-    └── rbs.go              # Remote Block Storage volumes
+    ├── rbs.go              # Remote Block Storage volumes
+    └── kubernetes_clusters.go # Kubernetes cluster and node inspection
 ```
 
 ## How to Add a New Tool
@@ -129,8 +130,9 @@ API tag groups map to tool files as follows:
 | Locations, Order options | `locations.go` |
 | L2 Segment | `l2_segments.go` |
 | Remote Block Storage (RBS) | `rbs.go` |
+| Kubernetes Cluster | `kubernetes_clusters.go` |
 
-Not yet implemented: Cloud Computing, Cloud Block Storage, Load Balancers, Network Pool, Kubernetes Cluster, Racks, Billing/Account, Metrics.
+Not yet implemented: Cloud Computing, Cloud Block Storage, Load Balancers, Network Pool, Racks, Billing/Account, Metrics.
 
 ## Async Operations
 
