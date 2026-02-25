@@ -36,7 +36,7 @@ SC_TOKEN=your-api-token npx @servers.com/mcp
 
 ## Available Tools
 
-73 tools across 6 categories — see **[TOOLS.md](TOOLS.md)** for the full reference.
+78 tools across 7 categories — see **[TOOLS.md](TOOLS.md)** for the full reference.
 
 ## Async Operations
 
