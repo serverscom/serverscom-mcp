@@ -32,6 +32,7 @@ func Register(server *mcp.Server, token, endpoint string) {
 	registerPowerTools(server, h)
 	registerReinstallTools(server, h)
 	registerNetworkTools(server, h)
+	registerL2SegmentTools(server, h)
 }
 
 // jsonResult serialises v as indented JSON and wraps it in a TextContent result.
