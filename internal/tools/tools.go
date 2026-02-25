@@ -14,13 +14,13 @@ type handler struct {
 	client *serverscom.Client
 }
 
-func Register(server *mcp.Server, token, endpoint string) {
+func Register(server *mcp.Server, token, endpoint, version string) {
 	if endpoint == "" {
 		endpoint = defaultEndpoint
 	}
 
 	client := serverscom.NewClientWithEndpoint(token, endpoint)
-	client.SetupUserAgent("serverscom-mcp/0.1.0")
+	client.SetupUserAgent("serverscom-mcp/" + version)
 
 	h := &handler{client: client}
 

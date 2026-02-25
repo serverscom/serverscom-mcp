@@ -34,10 +34,10 @@ func main() {
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			server := mcp.NewServer(&mcp.Implementation{
 				Name:    "serverscom-mcp",
-				Version: "0.1.0",
+				Version: Version,
 			}, nil)
 
-			tools.Register(server, cmd.String("token"), cmd.String("endpoint"))
+			tools.Register(server, cmd.String("token"), cmd.String("endpoint"), Version)
 
 			if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
 				return fmt.Errorf("server error: %w", err)
